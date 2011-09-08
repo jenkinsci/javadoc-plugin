@@ -44,7 +44,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Saves Javadoc for the project and publish them. 
+ * Saves Javadoc for the project and publish them.
+ *
+ * This class is in a wrong package for a historical reason.
  *
  * @author Kohsuke Kawaguchi
  */
