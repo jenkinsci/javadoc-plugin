@@ -30,6 +30,7 @@ import hudson.Extension;
 import hudson.EnvVars;
 import hudson.model.*;
 import hudson.util.FormValidation;
+import hudson.tasks.javadoc.Messages;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
