@@ -59,9 +59,9 @@ public class JavadocArchiver extends Recorder {
     private final boolean keepAll;
     
     @DataBoundConstructor
-    public JavadocArchiver(String javadoc_dir, boolean keep_all) {
-        this.javadocDir = javadoc_dir;
-        this.keepAll = keep_all;
+    public JavadocArchiver(String javadocDir, boolean keepAll) {
+        this.javadocDir = javadocDir;
+        this.keepAll = keepAll;
     }
 
     public String getJavadocDir() {
@@ -216,7 +216,7 @@ public class JavadocArchiver extends Recorder {
         /**
          * Performs on-the-fly validation on the file mask wildcard.
          */
-        public FormValidation doCheck(@AncestorInPath AbstractProject project, @QueryParameter String value) throws IOException, ServletException {
+        public FormValidation doCheckJavadocDir(@AncestorInPath AbstractProject project, @QueryParameter String value) throws IOException, ServletException {
             FilePath ws = project.getSomeWorkspace();
             return ws != null ? ws.validateRelativeDirectory(value) : FormValidation.ok();
         }
