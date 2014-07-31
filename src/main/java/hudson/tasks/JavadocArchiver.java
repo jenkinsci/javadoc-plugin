@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import jenkins.model.RunAction2;
 
 /**
  * Saves Javadoc for the project and publish them.
@@ -194,12 +195,24 @@ public class JavadocArchiver extends Recorder {
         }
     }
     
-    public static class JavadocBuildAction extends BaseJavadocAction {
-    	private final AbstractBuild<?,?> build;
-    	
+    public static class JavadocBuildAction extends BaseJavadocAction implements RunAction2 {
+        
+    	private transient AbstractBuild<?,?> build;
+
+        public JavadocBuildAction() {}
+
+        @Deprecated
     	public JavadocBuildAction(AbstractBuild<?,?> build) {
     	    this.build = build;
     	}
+
+        @Override public void onAttached(Run<?,?> r) {
+            build = (AbstractBuild<?,?>) r;
+        }
+
+        @Override public void onLoad(Run<?,?> r) {
+            build = (AbstractBuild<?,?>) r;
+        }
 
         protected String getTitle() {
             return build.getDisplayName()+" javadoc";
@@ -208,6 +221,7 @@ public class JavadocArchiver extends Recorder {
         protected File dir() {
             return getJavadocDir(build);
         }
+
     }
 
     @Extension
