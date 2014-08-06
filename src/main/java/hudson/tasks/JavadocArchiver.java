@@ -119,7 +119,7 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
              return;
         }
         
-        build.addAction(new JavadocBuildAction(!keepAll));
+        build.addAction(new JavadocBuildAction());
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -167,7 +167,7 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
             this((Job) project);
         }
 
-        private JavadocAction(Job<?,?> project) {
+        public JavadocAction(Job<?,?> project) {
             this.project = project;
         }
 
@@ -189,20 +189,12 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
     
     public static class JavadocBuildAction extends BaseJavadocAction implements RunAction2, SimpleBuildStep.LastBuildAction {
 
-        private final boolean hide;
     	private transient AbstractBuild<?,?> build;
 
-        private JavadocBuildAction(boolean hide) {
-            this.hide = hide;
-        }
-
-        @Deprecated public JavadocBuildAction() {
-            this(false);
-        }
+        public JavadocBuildAction() {}
 
         @Deprecated
     	public JavadocBuildAction(AbstractBuild<?,?> build) {
-            this(false);
     	    this.build = build;
     	}
 
@@ -212,10 +204,6 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
 
         @Override public void onLoad(Run<?,?> r) {
             build = (AbstractBuild<?,?>) r;
-        }
-
-        @Override public String getIconFileName() {
-            return hide ? null : super.getIconFileName();
         }
 
         protected String getTitle() {
