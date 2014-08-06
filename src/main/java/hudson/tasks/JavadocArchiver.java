@@ -197,7 +197,7 @@ public class JavadocArchiver extends Recorder {
     
     public static class JavadocBuildAction extends BaseJavadocAction implements RunAction2 {
         
-    	private transient AbstractBuild<?,?> build;
+    	private transient Run<?,?> build;
 
         public JavadocBuildAction() {}
 
@@ -207,11 +207,11 @@ public class JavadocArchiver extends Recorder {
     	}
 
         @Override public void onAttached(Run<?,?> r) {
-            build = (AbstractBuild<?,?>) r;
+            build = r;
         }
 
         @Override public void onLoad(Run<?,?> r) {
-            build = (AbstractBuild<?,?>) r;
+            build = r;
         }
 
         protected String getTitle() {
