@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import jenkins.model.RunAction2;
+import jenkins.tasks.SimpleBuildStep;
 
 /**
  * Saves Javadoc for the project and publish them.
@@ -52,7 +53,7 @@ import jenkins.model.RunAction2;
  *
  * @author Kohsuke Kawaguchi
  */
-public class JavadocArchiver extends Recorder {
+public class JavadocArchiver extends Recorder implements SimpleBuildStep {
     /**
      * Path to the Javadoc directory in the workspace.
      */
@@ -90,12 +91,12 @@ public class JavadocArchiver extends Recorder {
         return new File(run.getRootDir(),"javadoc");
     }
 
-    public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+    @Override public void perform(Run<?,?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         listener.getLogger().println(Messages.JavadocArchiver_Publishing());
 
         EnvVars env = build.getEnvironment(listener);
         
-        FilePath javadoc = build.getWorkspace().child(env.expand(javadocDir));
+        FilePath javadoc = workspace.child(env.expand(javadocDir));
         FilePath target = new FilePath(keepAll ? getJavadocDir(build) : getJavadocDir(build.getParent()));
 
         try {
@@ -106,25 +107,16 @@ public class JavadocArchiver extends Recorder {
                     listener.error(Messages.JavadocArchiver_NoMatchFound(javadoc,javadoc.validateAntFileMask("**/*")));
                 }
                 build.setResult(Result.FAILURE);
-                return true;
+                return;
             }
         } catch (IOException e) {
             Util.displayIOException(e,listener);
             e.printStackTrace(listener.fatalError(Messages.JavadocArchiver_UnableToCopy(javadoc,target)));
             build.setResult(Result.FAILURE);
-             return true;
+             return;
         }
         
-        // add build action, if javadoc is recorded for each build
-        if(keepAll)
-            build.addAction(new JavadocBuildAction());
-
-        return true;
-    }
-
-    @Override
-    public Collection<Action> getProjectActions(AbstractProject project) {
-        return Collections.<Action>singleton(new JavadocAction(project));
+        build.addAction(new JavadocBuildAction(!keepAll));
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -172,7 +164,7 @@ public class JavadocArchiver extends Recorder {
             this((Job) project);
         }
 
-        public JavadocAction(Job<?,?> project) {
+        private JavadocAction(Job<?,?> project) {
             this.project = project;
         }
 
@@ -192,14 +184,22 @@ public class JavadocArchiver extends Recorder {
         }
     }
     
-    public static class JavadocBuildAction extends BaseJavadocAction implements RunAction2 {
-        
+    public static class JavadocBuildAction extends BaseJavadocAction implements RunAction2, SimpleBuildStep.LastBuildAction {
+
+        private final boolean hide;
     	private transient AbstractBuild<?,?> build;
 
-        public JavadocBuildAction() {}
+        private JavadocBuildAction(boolean hide) {
+            this.hide = hide;
+        }
+
+        @Deprecated public JavadocBuildAction() {
+            this(false);
+        }
 
         @Deprecated
     	public JavadocBuildAction(AbstractBuild<?,?> build) {
+            this(false);
     	    this.build = build;
     	}
 
@@ -211,12 +211,20 @@ public class JavadocArchiver extends Recorder {
             build = (AbstractBuild<?,?>) r;
         }
 
+        @Override public String getIconFileName() {
+            return hide ? null : super.getIconFileName();
+        }
+
         protected String getTitle() {
             return build.getDisplayName()+" javadoc";
         }
 
         protected File dir() {
             return getJavadocDir(build);
+        }
+
+        @Override public Collection<? extends Action> getProjectActions() {
+            return Collections.singleton(new JavadocAction(build.getParent()));
         }
 
     }
