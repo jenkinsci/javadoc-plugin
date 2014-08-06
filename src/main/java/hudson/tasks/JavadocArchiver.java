@@ -189,7 +189,7 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
     
     public static class JavadocBuildAction extends BaseJavadocAction implements RunAction2, SimpleBuildStep.LastBuildAction {
 
-    	private transient AbstractBuild<?,?> build;
+    	private transient Run<?,?> build;
 
         public JavadocBuildAction() {}
 
@@ -199,11 +199,11 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
     	}
 
         @Override public void onAttached(Run<?,?> r) {
-            build = (AbstractBuild<?,?>) r;
+            build = r;
         }
 
         @Override public void onLoad(Run<?,?> r) {
-            build = (AbstractBuild<?,?>) r;
+            build = r;
         }
 
         protected String getTitle() {
