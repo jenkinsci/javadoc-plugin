@@ -79,7 +79,7 @@ public class JavadocArchiver extends Recorder {
     /**
      * Gets the directory where the Javadoc is stored for the given project.
      */
-    private static File getJavadocDir(AbstractItem project) {
+    private static File getJavadocDir(Job<?,?> project) {
         return new File(project.getRootDir(),"javadoc");
     }
 
@@ -96,7 +96,7 @@ public class JavadocArchiver extends Recorder {
         EnvVars env = build.getEnvironment(listener);
         
         FilePath javadoc = build.getWorkspace().child(env.expand(javadocDir));
-        FilePath target = new FilePath(keepAll ? getJavadocDir(build) : getJavadocDir(build.getProject()));
+        FilePath target = new FilePath(keepAll ? getJavadocDir(build) : getJavadocDir(build.getParent()));
 
         try {
             if (javadoc.copyRecursiveTo("**/*",target)==0) {
@@ -117,8 +117,8 @@ public class JavadocArchiver extends Recorder {
         
         // add build action, if javadoc is recorded for each build
         if(keepAll)
-            build.addAction(new JavadocBuildAction(build));
-        
+            build.addAction(new JavadocBuildAction());
+
         return true;
     }
 
@@ -166,27 +166,24 @@ public class JavadocArchiver extends Recorder {
     }
 
     public static class JavadocAction extends BaseJavadocAction implements ProminentProjectAction {
-        private final AbstractItem project;
+        private final Job<?,?> project;
 
-        public JavadocAction(AbstractItem project) {
+        @Deprecated public JavadocAction(AbstractItem project) {
+            this((Job) project);
+        }
+
+        public JavadocAction(Job<?,?> project) {
             this.project = project;
         }
 
         protected File dir() {
-            // Would like to change AbstractItem to AbstractProject, but is
-            // that a backwards compatible change?
-            if (project instanceof AbstractProject) {
-                AbstractProject abstractProject = (AbstractProject) project;
-
-                Run run = abstractProject.getLastSuccessfulBuild();
-                if (run != null) {
-                    File javadocDir = getJavadocDir(run);
-
-                    if (javadocDir.exists())
-                        return javadocDir;
+            Run<?,?> run = project.getLastSuccessfulBuild();
+            if (run != null) {
+                File javadocDir = getJavadocDir(run);
+                if (javadocDir.exists()) {
+                    return javadocDir;
                 }
             }
-
             return getJavadocDir(project);
         }
 
