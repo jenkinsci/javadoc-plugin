@@ -53,6 +53,9 @@ import jenkins.model.RunAction2;
  * @author Kohsuke Kawaguchi
  */
 public class JavadocArchiver extends Recorder {
+    
+    static final String HELP_PNG = "help.png";
+
     /**
      * Path to the Javadoc directory in the workspace.
      */
@@ -147,7 +150,7 @@ public class JavadocArchiver extends Recorder {
         public String getIconFileName() {
             File dir = dir();
             if(dir != null && dir.exists())
-                return "help.png";
+                return HELP_PNG;
             else
                 // hide it since we don't have javadoc yet.
                 return null;
@@ -157,7 +160,7 @@ public class JavadocArchiver extends Recorder {
          * Serves javadoc.
          */
         public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-            new DirectoryBrowserSupport(this, new FilePath(dir()), getTitle(), "help.png", false).generateResponse(req,rsp,this);
+            new DirectoryBrowserSupport(this, new FilePath(dir()), getTitle(), HELP_PNG, false).generateResponse(req,rsp,this);
         }
 
         protected abstract String getTitle();
