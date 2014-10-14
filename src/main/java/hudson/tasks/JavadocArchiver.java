@@ -230,6 +230,9 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
          * Performs on-the-fly validation on the file mask wildcard.
          */
         public FormValidation doCheckJavadocDir(@AncestorInPath AbstractProject project, @QueryParameter String value) throws IOException, ServletException {
+            if (project == null) {
+                return FormValidation.ok();
+            }
             FilePath ws = project.getSomeWorkspace();
             return ws != null ? ws.validateRelativeDirectory(value) : FormValidation.ok();
         }
