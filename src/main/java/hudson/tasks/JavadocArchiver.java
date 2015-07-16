@@ -104,9 +104,11 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
 
         try {
             if (javadoc.copyRecursiveTo("**/*",target)==0) {
-                if(build.getResult().isBetterOrEqualTo(Result.UNSTABLE)) {
+                final Result result = build.getResult();
+                if(result == null || result.isBetterOrEqualTo(Result.UNSTABLE)) {
                     // If the build failed, don't complain that there was no javadoc.
                     // The build probably didn't even get to the point where it produces javadoc.
+                    // If the build is running (AnyBuildStep, etc.), we also fail it
                     listener.error(Messages.JavadocArchiver_NoMatchFound(javadoc,javadoc.validateAntFileMask("**/*")));
                 }
                 build.setResult(Result.FAILURE);
