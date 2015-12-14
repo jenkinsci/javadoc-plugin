@@ -57,6 +57,8 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
     
     static final String HELP_PNG = "help.png";
 
+    private static final String NOFRAMES_INDEX = "overview-summary.html";
+
     /**
      * Path to the Javadoc directory in the workspace.
      */
@@ -154,7 +156,13 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
          * Serves javadoc.
          */
         public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-            new DirectoryBrowserSupport(this, new FilePath(dir()), getTitle(), HELP_PNG, false).generateResponse(req,rsp,this);
+            DirectoryBrowserSupport dbs = new DirectoryBrowserSupport(this, new FilePath(dir()), getTitle(), HELP_PNG, false);
+            if (new File(dir(), NOFRAMES_INDEX).exists() && Boolean.valueOf(
+                    System.getProperty(JavadocArchiver.class.getName() + ".useFramelessIndex", "true"))) {
+                /* If an overview-summary.html exists, serve that, unless the system property evaluates to false */
+                dbs.setIndexFileName(NOFRAMES_INDEX);
+            }
+            dbs.generateResponse(req, rsp, this);
         }
 
         protected abstract String getTitle();
