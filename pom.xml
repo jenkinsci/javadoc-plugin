@@ -20,34 +20,16 @@
   </scm>
   
   <properties>
-    <jenkins.version>1.625.3</jenkins.version> <!-- 1.577 -->
-    <!--<jenkins-test-harness.version>2.6</jenkins-test-harness.version>-->
+    <jenkins.version>1.625.3</jenkins.version>
   </properties>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>3.0.1</version> <!-- Try bumping to 3.0.3 & see if it passes -->
-        <configuration>
-          <xmlOutput>true</xmlOutput>
-          <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-          <failOnError>true</failOnError>
-        </configuration>
-        <executions>
-          <execution>
-            <id>run-findbugs</id>
-            <phase>verify</phase> 
-            <goals>
-              <goal>check</goal> 
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
+  
   <licenses>
     <license>
       <name>The MIT license</name>
@@ -55,5 +37,12 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>  
 
