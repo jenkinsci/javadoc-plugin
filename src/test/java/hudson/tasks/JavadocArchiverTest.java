@@ -22,6 +22,7 @@ import hudson.scm.NullSCM;
 import hudson.scm.SCMRevisionState;
 import org.junit.Rule;
 import org.junit.Test;
+import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
@@ -41,7 +42,7 @@ public class JavadocArchiverTest {
         r.assertEqualDataBoundBeans(before, p.getPublishersList().get(JavadocArchiver.class));
     }
 
-    @Test
+    @Test @Issue("JENKINS-32619")
     public void renderJavadoc() throws Exception {
         FreeStyleProject s8 = setupJavadocProject("javadoc-single-8");
         FreeStyleProject s11 = setupJavadocProject("javadoc-single-11");
@@ -56,7 +57,7 @@ public class JavadocArchiverTest {
 
     private FreeStyleProject setupJavadocProject(String s) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject(s);
-        p.setScm(new CopyResourceDir(getClass().getResource(s), "javadoc"));
+        p.setScm(new CopyResourceDir(JavadocArchiverTest.class.getResource(s), "javadoc"));
         p.getPublishersList().add(new JavadocArchiver("javadoc", true));
         r.buildAndAssertSuccess(p);
         return p;
