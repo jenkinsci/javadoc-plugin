@@ -38,11 +38,13 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.AncestorInPath;
 
+import javax.annotation.CheckForNull;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+
 import jenkins.model.RunAction2;
 import jenkins.tasks.SimpleBuildStep;
 
@@ -56,8 +58,6 @@ import jenkins.tasks.SimpleBuildStep;
 public class JavadocArchiver extends Recorder implements SimpleBuildStep {
     
     static final String HELP_PNG = "help.png";
-
-    private static final String NOFRAMES_INDEX = "overview-summary.html";
 
     /**
      * Path to the Javadoc directory in the workspace.
@@ -156,13 +156,33 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
          * Serves javadoc.
          */
         public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-            DirectoryBrowserSupport dbs = new DirectoryBrowserSupport(this, new FilePath(dir()), getTitle(), HELP_PNG, false);
-            if (new File(dir(), NOFRAMES_INDEX).exists() && Boolean.valueOf(
-                    System.getProperty(JavadocArchiver.class.getName() + ".useFramelessIndex", "true"))) {
-                /* If an overview-summary.html exists, serve that, unless the system property evaluates to false */
-                dbs.setIndexFileName(NOFRAMES_INDEX);
+            final File basedir = dir();
+            DirectoryBrowserSupport dbs = new DirectoryBrowserSupport(this, new FilePath(basedir), getTitle(), HELP_PNG, false);
+
+            String index = alternativeIndexFile(basedir);
+            if (index != null) {
+                dbs.setIndexFileName(index);
             }
+
             dbs.generateResponse(req, rsp, this);
+        }
+
+        /**
+         * Default index.html can not be served by Jenkins safely both because Java 8 and older contains frames and Java 9 and newer uses Javascript.
+         *
+         * Suggest alternative file to start browsing from to overcome this limitation. See https://issues.jenkins-ci.org/browse/JENKINS-32619
+         */
+        private @CheckForNull String alternativeIndexFile(File basedir) {
+            // Suggest unless user insisted otherwise
+            boolean useFrameless = Boolean.parseBoolean(System.getProperty(JavadocArchiver.class.getName() + ".useFramelessIndex", "true"));
+            if (!useFrameless) return null;
+
+            if (new File(basedir, "overview-tree.html").exists()) {
+                return "overview-tree.html";
+            }
+
+            // All else failed, use default and hope for the best
+            return null;
         }
 
         protected abstract String getTitle();

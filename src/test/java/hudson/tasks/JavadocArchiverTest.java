@@ -7,10 +7,22 @@ import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
+
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
+
+import hudson.model.Run;
+import hudson.model.TaskListener;
+import hudson.scm.NullSCM;
+import hudson.scm.SCMRevisionState;
 import org.junit.Rule;
 import org.junit.Test;
+import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
@@ -28,6 +40,33 @@ public class JavadocArchiverTest {
         p.getPublishersList().add(before);
         r.configRoundtrip(p);
         r.assertEqualDataBoundBeans(before, p.getPublishersList().get(JavadocArchiver.class));
+    }
+
+    @Test @Issue("JENKINS-32619")
+    public void renderJavadoc() throws Exception {
+        FreeStyleProject s8 = setupJavadocProject("javadoc-single-8");
+        FreeStyleProject s11 = setupJavadocProject("javadoc-single-11");
+        FreeStyleProject m8 = setupJavadocProject("javadoc-multi-8");
+        FreeStyleProject m11 = setupJavadocProject("javadoc-multi-11");
+        //r.interactiveBreak();
+        validateJavadocReport(s8);
+        validateJavadocReport(s11);
+        validateJavadocReport(m8);
+        validateJavadocReport(m11);
+    }
+
+    private FreeStyleProject setupJavadocProject(String s) throws Exception {
+        FreeStyleProject p = r.createFreeStyleProject(s);
+        p.setScm(new CopyResourceDir(JavadocArchiverTest.class.getResource(s), "javadoc"));
+        p.getPublishersList().add(new JavadocArchiver("javadoc", true));
+        r.buildAndAssertSuccess(p);
+        return p;
+    }
+
+    private void validateJavadocReport(FreeStyleProject p) throws Exception {
+        FreeStyleBuild b = p.getBuildByNumber(1);
+        assertShowsDoc(b.getAction(JavadocArchiver.JavadocBuildAction.class), b.getUrl(), "com.mycompany.app");
+        assertShowsDoc(p.getAction(JavadocArchiver.JavadocAction.class), p.getUrl(), "com.mycompany.app");
     }
 
     @Test public void keepAll() throws Exception {
@@ -64,7 +103,9 @@ public class JavadocArchiverTest {
     private void assertShowsDoc(Action a, String baseUrl, String text) throws Exception {
         assertNotNull(a);
         assertEquals(JavadocArchiver.HELP_PNG, a.getIconFileName());
-        assertEquals(text, r.createWebClient().goTo(baseUrl + a.getUrlName() + "/").getWebResponse().getContentAsString());
+        JenkinsRule.WebClient wc = r.createWebClient();
+        wc.getOptions().setJavaScriptEnabled(false); // Should not be
+        assertThat(wc.goTo(baseUrl + a.getUrlName() + "/").getWebResponse().getContentAsString(), containsString(text));
     }
 
     private void assertHidden(Action a) {
@@ -73,4 +114,20 @@ public class JavadocArchiverTest {
         }
     }
 
+    private static class CopyResourceDir extends NullSCM {
+        private final FilePath resource;
+        private final String target;
+
+        public CopyResourceDir(URL resource, String target) throws URISyntaxException {
+            this.resource = new FilePath(new File(resource.toURI()));
+            this.target = target;
+        }
+
+        @Override
+        public void checkout(
+                Run<?, ?> build, Launcher launcher, FilePath workspace, TaskListener listener, File changelogFile, SCMRevisionState baseline
+        ) throws IOException, InterruptedException {
+            resource.copyRecursiveTo(workspace.child(target));
+        }
+    }
 }
