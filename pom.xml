@@ -24,6 +24,14 @@
     <java.level>8</java.level>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.jenkins-ci</groupId>
+      <artifactId>symbol-annotation</artifactId>
+      <version>1.17</version>
+    </dependency>
+  </dependencies>
+
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
