@@ -32,6 +32,7 @@ import hudson.model.*;
 import hudson.util.FormValidation;
 import hudson.tasks.javadoc.Messages;
 
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -251,6 +252,7 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
     }
 
     @Extension
+    @Symbol("javadoc")
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public String getDisplayName() {
             return Messages.JavadocArchiver_DisplayName();
