@@ -1,4 +1,4 @@
-# Change Log
+# Changelog
 
 ### Version 1.5 (Mar 06, 2019)
 
