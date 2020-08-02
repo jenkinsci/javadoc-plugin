@@ -1,5 +1,9 @@
 # Changelog
 
+## Newer releases
+
+See [GitHub Releases](https://github.com/jenkinsci/javadoc-plugin/releases)
+
 ## Version 1.5 (Mar 06, 2019)
 
 -   [JENKINS-32619](https://issues.jenkins-ci.org/browse/JENKINS-32619) -
