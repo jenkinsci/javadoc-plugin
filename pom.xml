@@ -11,7 +11,7 @@
   <packaging>hpi</packaging>
   <name>Javadoc Plugin</name>
 
-  <url>http://wiki.jenkins-ci.org/display/JENKINS/Javadoc+Plugin</url>
+  <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
