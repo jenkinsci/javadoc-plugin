@@ -135,7 +135,7 @@ public class JavadocArchiverTest {
 
     private void assertShowsDoc(Action a, String baseUrl, String text) throws Exception {
         assertNotNull(a);
-        assertEquals(JavadocArchiver.HELP_PNG, a.getIconFileName());
+        assertEquals(JavadocArchiver.JAVADOC_ICON, a.getIconFileName());
         JenkinsRule.WebClient wc = r.createWebClient();
         wc.getOptions().setJavaScriptEnabled(false); // Should not be
         assertThat(wc.goTo(baseUrl + a.getUrlName() + "/").getWebResponse().getContentAsString(), containsString(text));
