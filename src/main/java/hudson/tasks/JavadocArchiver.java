@@ -58,7 +58,7 @@ import jenkins.tasks.SimpleBuildStep;
  */
 public class JavadocArchiver extends Recorder implements SimpleBuildStep {
     
-    static final String HELP_PNG = "help.png";
+    static final String JAVADOC_ICON = "/plugin/javadoc/icons/javadoc.svg";
 
     /**
      * Path to the Javadoc directory in the workspace.
@@ -147,7 +147,7 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
         public String getIconFileName() {
             File dir = dir();
             if(dir != null && dir.exists())
-                return HELP_PNG;
+                return JAVADOC_ICON;
             else
                 // hide it since we don't have javadoc yet.
                 return null;
@@ -158,7 +158,7 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
          */
         public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
             final File basedir = dir();
-            DirectoryBrowserSupport dbs = new DirectoryBrowserSupport(this, new FilePath(basedir), getTitle(), HELP_PNG, false);
+            DirectoryBrowserSupport dbs = new DirectoryBrowserSupport(this, new FilePath(basedir), getTitle(), JAVADOC_ICON, false);
 
             String index = alternativeIndexFile(basedir);
             if (index != null) {
