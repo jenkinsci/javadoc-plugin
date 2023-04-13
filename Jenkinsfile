@@ -8,5 +8,5 @@ buildPlugin(useContainerAgent: true,
                 // testing the Guava & Guice bumps
                 // https://github.com/jenkinsci/jenkins/pull/5707
                 // https://github.com/jenkinsci/jenkins/pull/5858
-                [ platform: "linux", jdk: "17", jenkins: '2.361.4' ]
+                [ platform: "linux", jdk: "17", jenkins: '2.387.2' ]
         ])
