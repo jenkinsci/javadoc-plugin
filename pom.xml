@@ -27,7 +27,6 @@
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <jenkins.version>2.303.3</jenkins.version>
     <spotbugs.effort>Max</spotbugs.effort>
-    <spotbugs.failOnError>true</spotbugs.failOnError>
     <spotbugs.threshold>Low</spotbugs.threshold>
   </properties>
 
