@@ -36,8 +36,7 @@
     <jenkins.version>2.361.4</jenkins.version>
     <spotbugs.effort>Max</spotbugs.effort>
     <spotbugs.threshold>Low</spotbugs.threshold>
-    <!-- TODO: Enable spotless when Java 21 issue is fixed -->
-    <!-- <spotless.check.skip>false</spotless.check.skip> -->
+    <spotless.check.skip>false</spotless.check.skip>
   </properties>
 
   <dependencyManagement>
