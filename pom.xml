@@ -33,10 +33,10 @@
   <properties>
     <changelist>999999-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-    <jenkins.baseline>2.462</jenkins.baseline>
+    <jenkins.baseline>2.479</jenkins.baseline>
     <!-- TODO restore when Jetty 12 EE 9 is in LTS -->
     <!-- <jenkins.version>${jenkins.baseline}.1</jenkins.version> -->
-    <jenkins.version>2.479</jenkins.version>
+    <jenkins.version>${jenkins.baseline}</jenkins.version>
     <spotbugs.effort>Max</spotbugs.effort>
     <spotbugs.threshold>Low</spotbugs.threshold>
     <spotless.check.skip>false</spotless.check.skip>
@@ -47,7 +47,7 @@
       <dependency>
         <groupId>io.jenkins.tools.bom</groupId>
         <artifactId>bom-${jenkins.baseline}.x</artifactId>
-        <version>3435.v238d66a_043fb_</version>
+        <version>3482.vc10d4f6da_28a_</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
