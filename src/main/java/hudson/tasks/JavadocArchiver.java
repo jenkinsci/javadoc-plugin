@@ -32,19 +32,19 @@ import hudson.Util;
 import hudson.model.*;
 import hudson.tasks.javadoc.Messages;
 import hudson.util.FormValidation;
+import jakarta.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import javax.servlet.ServletException;
 import jenkins.model.RunAction2;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 
 /**
  * Saves Javadoc for the project and publish them.
@@ -153,7 +153,7 @@ public class JavadocArchiver extends Recorder implements SimpleBuildStep {
         /**
          * Serves javadoc.
          */
-        public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        public void doDynamic(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
             final File basedir = dir();
             DirectoryBrowserSupport dbs =
                     new DirectoryBrowserSupport(this, new FilePath(basedir), getTitle(), JAVADOC_ICON, false);
