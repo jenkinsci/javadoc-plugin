@@ -1,16 +1,19 @@
-# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates
----
+# Per https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates
 version: 2
 updates:
+
+  # Maintain dependencies for maven
   - package-ecosystem: "maven"
     directory: "/"
+    schedule:
+      interval: "monthly"
     labels:
       - "dependencies"
-    schedule:
-      interval: "monthly"
+
+  # Maintain dependencies for GitHub actions
   - package-ecosystem: "github-actions"
     directory: "/"
-    labels:
-      - "skip-changelog"
     schedule:
       interval: "monthly"
+    labels:
+      - "skip-changelog"
