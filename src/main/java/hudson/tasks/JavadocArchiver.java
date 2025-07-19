@@ -55,7 +55,7 @@ import org.kohsuke.stapler.StaplerResponse2;
  */
 public class JavadocArchiver extends Recorder implements SimpleBuildStep {
 
-    static final String JAVADOC_ICON = "/plugin/javadoc/icons/javadoc.svg";
+    static final String JAVADOC_ICON = "symbol-duke-icon-solid plugin-oss-symbols-api";
 
     /**
      * Path to the Javadoc directory in the workspace.
